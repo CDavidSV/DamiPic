@@ -1,0 +1,2 @@
+# DamiPic
+ Placeholder image generator
