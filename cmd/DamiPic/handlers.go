@@ -9,12 +9,16 @@ import (
 	"strings"
 )
 
+func (a *app) homehandler(w http.ResponseWriter, r *http.Request) {
+	a.render(w, r, 200, "index.tmpl.html")
+}
+
 func (a *app) placeholderImgHandler(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 
 	imgSizeInput := r.PathValue("size")
 	text := params.Get("text")
-	format := params.Get("format")
+	format := coalesce(params.Get("format"), "png")
 	// bgColor := params.Get("bg-color")
 	// textColor := params.Get("text-color")
 
@@ -51,11 +55,6 @@ func (a *app) placeholderImgHandler(w http.ResponseWriter, r *http.Request) {
 		text = fmt.Sprintf("%d×%d", width, height)
 	}
 
-	if !isSupportedFormat(format) {
-		a.clientError(w, format+" is not a valid or supported image format: Try using png, jpeg or jpg", http.StatusBadRequest)
-		return
-	}
-
 	img, err := generatePlaceholderImg(width, height, text)
 	if err != nil {
 		a.serverError(w, r, err)
@@ -71,9 +70,11 @@ func (a *app) placeholderImgHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		break
 	case "png":
-	default:
 		w.Header().Set("Content-Type", "image/png")
 		png.Encode(w, img)
+		break
+	default:
+		a.clientError(w, format+" is not a valid or supported image format: Try using png, jpeg or jpg", http.StatusBadRequest)
 		break
 	}
 }

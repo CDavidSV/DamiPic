@@ -1,0 +1,112 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <title>DamiPic</title>
+</head>
+<body>
+    <header>
+        <div class="content header">
+            <div>
+                <h1>DamiPic</h1>
+                <p>Generate placeholder images</p>
+            </div>
+
+            <a target="_blank" class="github-link" href="https://github.com/CDavidSV/DamiPic">
+                <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            </a>
+        </div>
+    </header>
+    <main>
+        <section class="preview-container">
+            <div class="content">
+                <div class="preview">
+                    <img id="preview-image" alt="preview-image">
+                </div>
+                <div class="preview-actions">
+                    <a class="button primary" aria-label="download image" id="download-image">Download</a>
+                    <div class="copy-container">
+                        <button id="copy-url-btn" aria-label="copy image url">
+                            Copy
+                        </button>
+                        <p id="copy-url"></p>
+                    </div>
+                    <div class="copy-container">
+                        <button id="copy-img-btn" aria-label="copy image url">
+                            Copy
+                        </button>
+                        <p id="copy-img-tag"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="form-container">
+            <div class="content form-content">
+                <form id="generate-form" class=generate-form form">
+                    <div>
+                        <label for="width">Width</label>
+                        <input class="input" type="number" name="width" id="width" value="1920" placeholder="Width">
+                    </div>
+
+                    <div>
+                        <label for="height">Height</label>
+                        <input class="input" type="number" name="height" id="height" value="1080" placeholder="Height">
+                    </div>
+
+                    <div>
+                        <label for="text">Text</label>
+                        <input class="input" type="text" name="text" id="text" placeholder="Text">
+                    </div>
+
+                    <div class="color-pickers">
+                        <div>
+                            <label for="background-color">Background Color</label>
+                            <div class="color-input-container">
+                                <input class="input" type="color" name="background-color" id="background-color" value="#dcdcdc">
+                                <button type="button" class="button primary" aria-label="randomize-background-color" id="randomize-background-color">Randomize</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="text-color">Text Color</label>
+                            <div class="color-input-container">
+                                <input class="input" type="color" name="text-color" id="text-color" value="#000000">
+                                <button type="button" class="button primary" aria-label="randomize-text-color" id="randomize-text-color">Randomize</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="image-format">Format</label>
+                        <select class="input" name="image-format" id="image-format">
+                            <option value="png">PNG</option>
+                            <option value="jpeg">JPEG</option>
+                        </select>
+                    </div>
+
+                    <button class="button primary" type="submit" aria-label="generate image">Generate</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="content footer">
+            <p>DamiPic</p>
+            <span>Made with ♥ by <a href="https://cdavidsv.dev/" target="_blank">Carlos David Sandoval Vargas</a></span>
+        </div>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+</body>
+
+</html>
+{{end}}

@@ -42,8 +42,8 @@ func init() {
 // }
 
 func addLabel(img *image.RGBA, text string) error {
-	fontSize := float64(img.Rect.Max.Y) * 0.04
-	margin := float64(img.Rect.Max.X) * 0.05
+	fontSize := float64(img.Rect.Max.Y) * 0.08
+	margin := float64(img.Rect.Max.X) * 0.03
 
 	options := &truetype.Options{
 		Size: fontSize,
