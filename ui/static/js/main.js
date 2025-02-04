@@ -31,7 +31,7 @@ const generateImageURL = (options) => {
         format: options.format || 'jpeg',
     }
 
-    let url = `${apiURL}/img/${options.width}x${options.height}?textColor=${options.textColor}&backgroundColor=${options.backgroundColor}&format=${options.format}`;
+    let url = `${apiURL}/img/${options.width}x${options.height}?text-color=${options.textColor}&bg-color=${options.backgroundColor}&format=${options.format}`;
 
     if (options.text !== '') {
         url += `&text=${text}`;

@@ -22,3 +22,7 @@ go.work
 
 # air
 tmp/
+
+# ssl cert
+cert.pem
+key.pem

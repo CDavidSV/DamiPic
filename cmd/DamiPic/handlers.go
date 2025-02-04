@@ -19,8 +19,8 @@ func (a *app) placeholderImgHandler(w http.ResponseWriter, r *http.Request) {
 	imgSizeInput := r.PathValue("size")
 	text := params.Get("text")
 	format := coalesce(params.Get("format"), "png")
-	// bgColor := params.Get("bg-color")
-	// textColor := params.Get("text-color")
+	bgColor := params.Get("bg-color")
+	textColor := params.Get("text-color")
 
 	// We validate that the size is in the correct format (e.g. 300x200)
 	size := strings.Split(strings.ToLower(imgSizeInput), "x")
@@ -55,7 +55,7 @@ func (a *app) placeholderImgHandler(w http.ResponseWriter, r *http.Request) {
 		text = fmt.Sprintf("%d×%d", width, height)
 	}
 
-	img, err := generatePlaceholderImg(width, height, text)
+	img, err := generatePlaceholderImg(width, height, text, bgColor, textColor)
 	if err != nil {
 		a.serverError(w, r, err)
 		return

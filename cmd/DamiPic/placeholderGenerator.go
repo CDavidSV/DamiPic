@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/golang/freetype"
@@ -21,6 +23,8 @@ var (
 	foreground        *image.Uniform = image.Black
 	defaultBackground *image.Uniform = &image.Uniform{color.RGBA{220, 220, 220, 255}}
 	spacing           float64        = 1.5
+
+	ErrInvalidColorHex = fmt.Errorf("invalid color hex")
 )
 
 func init() {
@@ -35,13 +39,36 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 }
 
-// func parseHexColorString(color string) color.RGBA {
+func parseHexColorString(hex string) (color.RGBA, error) {
+	var rgbaColor color.RGBA
 
-// }
+	if len(hex) != 6 {
+		return rgbaColor, fmt.Errorf("invalid color string")
+	}
 
-func addLabel(img *image.RGBA, text string) error {
+	red, err := strconv.ParseUint(hex[0:2], 16, 8)
+	if err != nil {
+		return rgbaColor, err
+	}
+
+	green, err := strconv.ParseUint(hex[2:4], 16, 8)
+	if err != nil {
+		return rgbaColor, err
+	}
+
+	blue, err := strconv.ParseUint(hex[4:6], 16, 8)
+	if err != nil {
+		return rgbaColor, err
+	}
+
+	rgbaColor = color.RGBA{uint8(red), uint8(green), uint8(blue), 255}
+	return rgbaColor, nil
+}
+
+func addLabel(img *image.RGBA, text string, fr *image.Uniform) error {
 	fontSize := float64(img.Rect.Max.Y) * 0.08
 	margin := float64(img.Rect.Max.X) * 0.03
 
@@ -86,7 +113,7 @@ func addLabel(img *image.RGBA, text string) error {
 	ctx.SetDPI(dpi)
 	ctx.SetFont(f)
 	ctx.SetFontSize(fontSize)
-	ctx.SetSrc(foreground)
+	ctx.SetSrc(fr)
 	ctx.SetClip(img.Bounds())
 	ctx.SetDst(img)
 
@@ -105,13 +132,33 @@ func addLabel(img *image.RGBA, text string) error {
 	return nil
 }
 
-func generatePlaceholderImg(width, heigth int, text string) (*image.RGBA, error) {
+func generatePlaceholderImg(width, heigth int, text string, bgColor string, textColor string) (*image.RGBA, error) {
 	baseImage := image.NewRGBA(image.Rect(0, 0, width, heigth))
 
-	// Sets a color to the image
-	draw.Draw(baseImage, baseImage.Bounds(), defaultBackground, image.Point{0, 0}, draw.Src)
+	bg := defaultBackground
+	if bgColor != "" {
+		rgbaColor, err := parseHexColorString(bgColor)
+		if err != nil {
+			return nil, ErrInvalidColorHex
+		}
 
-	if err := addLabel(baseImage, text); err != nil {
+		bg = &image.Uniform{rgbaColor}
+	}
+
+	textForeground := foreground
+	if textColor != "" {
+		rgbaColor, err := parseHexColorString(textColor)
+		if err != nil {
+			return nil, ErrInvalidColorHex
+		}
+
+		textForeground = &image.Uniform{rgbaColor}
+	}
+
+	// Sets a color to the image
+	draw.Draw(baseImage, baseImage.Bounds(), bg, image.Point{0, 0}, draw.Src)
+
+	if err := addLabel(baseImage, text, textForeground); err != nil {
 		return nil, err
 	}
 
