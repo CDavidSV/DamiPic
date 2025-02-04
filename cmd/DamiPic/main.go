@@ -76,5 +76,5 @@ func main() {
 	}
 
 	logger.Info("Starting server", "addr", *addr)
-	log.Fatal(server.ListenAndServe())
+	log.Fatal(server.ListenAndServeTLS("./cert.pem", "./key.pem"))
 }
