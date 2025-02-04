@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"fmt"
@@ -7,8 +7,10 @@ import (
 	"image/draw"
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/golang/freetype"
 	"github.com/golang/freetype/truetype"
@@ -25,24 +27,36 @@ var (
 	spacing           float64        = 1.5
 
 	ErrInvalidColorHex = fmt.Errorf("invalid color hex")
+
+	contextPool = sync.Pool{
+		New: func() any {
+			ctx := freetype.NewContext()
+
+			ctx.SetDPI(dpi)
+			ctx.SetFont(f)
+
+			return ctx
+		},
+	}
 )
 
 func init() {
-	var fontFilePath string = "./fonts/Poppins-SemiBold.ttf"
-
-	fontBytes, err := os.ReadFile(fontFilePath)
+	exePath, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// Might give an error when running the tests. Use ../fonts when running the tests
+	fontFilePath := filepath.Join(exePath, "fonts", "Poppins-SemiBold.ttf")
+
+	fontBytes, err := os.ReadFile(fontFilePath)
 	f, err = freetype.ParseFont(fontBytes)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
 
-func parseHexColorString(hex string) (color.RGBA, error) {
+func ParseHexColorString(hex string) (color.RGBA, error) {
 	var rgbaColor color.RGBA
 
 	if len(hex) != 6 {
@@ -69,7 +83,7 @@ func parseHexColorString(hex string) (color.RGBA, error) {
 }
 
 func addLabel(img *image.RGBA, text string, fr *image.Uniform) error {
-	fontSize := float64(img.Rect.Max.Y) * 0.08
+	fontSize := float64(img.Rect.Max.Y) * 0.09
 	margin := float64(img.Rect.Max.X) * 0.03
 
 	options := &truetype.Options{
@@ -109,9 +123,7 @@ func addLabel(img *image.RGBA, text string, fr *image.Uniform) error {
 	// We calculate the position of the text in the image after adjusting the font size
 	py := (img.Rect.Max.Y / 2) - int(fontSize*float64(len(textLines))+spacing)/2
 
-	ctx := freetype.NewContext()
-	ctx.SetDPI(dpi)
-	ctx.SetFont(f)
+	ctx := contextPool.Get().(*freetype.Context)
 	ctx.SetFontSize(fontSize)
 	ctx.SetSrc(fr)
 	ctx.SetClip(img.Bounds())
@@ -129,15 +141,17 @@ func addLabel(img *image.RGBA, text string, fr *image.Uniform) error {
 		pt.Y += ctx.PointToFixed(fontSize * spacing)
 	}
 
+	contextPool.Put(ctx)
+
 	return nil
 }
 
-func generatePlaceholderImg(width, heigth int, text string, bgColor string, textColor string) (*image.RGBA, error) {
+func GeneratePlaceholderImg(width, heigth int, text string, bgColor string, textColor string) (*image.RGBA, error) {
 	baseImage := image.NewRGBA(image.Rect(0, 0, width, heigth))
 
 	bg := defaultBackground
 	if bgColor != "" {
-		rgbaColor, err := parseHexColorString(bgColor)
+		rgbaColor, err := ParseHexColorString(bgColor)
 		if err != nil {
 			return nil, ErrInvalidColorHex
 		}
@@ -147,7 +161,7 @@ func generatePlaceholderImg(width, heigth int, text string, bgColor string, text
 
 	textForeground := foreground
 	if textColor != "" {
-		rgbaColor, err := parseHexColorString(textColor)
+		rgbaColor, err := ParseHexColorString(textColor)
 		if err != nil {
 			return nil, ErrInvalidColorHex
 		}

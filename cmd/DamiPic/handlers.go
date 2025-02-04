@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/CDavidSV/DamiPic/internal"
 )
 
 func (a *app) homehandler(w http.ResponseWriter, r *http.Request) {
@@ -56,9 +58,9 @@ func (a *app) placeholderImgHandler(w http.ResponseWriter, r *http.Request) {
 		text = fmt.Sprintf("%d×%d", width, height)
 	}
 
-	img, err := generatePlaceholderImg(width, height, text, bgColor, textColor)
+	img, err := internal.GeneratePlaceholderImg(width, height, text, bgColor, textColor)
 	if err != nil {
-		if errors.Is(err, ErrInvalidColorHex) {
+		if errors.Is(err, internal.ErrInvalidColorHex) {
 			a.clientError(w, err.Error(), http.StatusBadRequest)
 			return
 		}
