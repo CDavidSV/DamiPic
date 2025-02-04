@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"image/jpeg"
 	"image/png"
@@ -57,6 +58,11 @@ func (a *app) placeholderImgHandler(w http.ResponseWriter, r *http.Request) {
 
 	img, err := generatePlaceholderImg(width, height, text, bgColor, textColor)
 	if err != nil {
+		if errors.Is(err, ErrInvalidColorHex) {
+			a.clientError(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
 		a.serverError(w, r, err)
 		return
 	}
