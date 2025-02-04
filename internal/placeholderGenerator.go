@@ -50,6 +50,10 @@ func init() {
 	fontFilePath := filepath.Join(exePath, "fonts", "Poppins-SemiBold.ttf")
 
 	fontBytes, err := os.ReadFile(fontFilePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	f, err = freetype.ParseFont(fontBytes)
 	if err != nil {
 		log.Fatal(err)
