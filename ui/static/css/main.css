@@ -105,10 +105,17 @@ a {
   max-width: 100%;
 }
 
+.title {
+  margin-top: 20px;
+  margin-bottom: 3px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: white;
+}
+
 .copy-container {
   display: flex;
   gap: 4px;
-  margin-top: 20px;
   background-color: white;
   border-radius: 10px;
   overflow: hidden;
