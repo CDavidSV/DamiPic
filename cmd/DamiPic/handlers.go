@@ -76,13 +76,10 @@ func (a *app) placeholderImgHandler(w http.ResponseWriter, r *http.Request) {
 		jpeg.Encode(w, img, &jpeg.Options{
 			Quality: 80,
 		})
-		break
 	case "png":
 		w.Header().Set("Content-Type", "image/png")
 		png.Encode(w, img)
-		break
 	default:
 		a.clientError(w, format+" is not a valid or supported image format: Try using png, jpeg or jpg", http.StatusBadRequest)
-		break
 	}
 }

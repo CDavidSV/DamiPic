@@ -71,8 +71,6 @@ RUN adduser \
 --uid "${UID}" \
 appuser
 
-RUN chown appuser:appuser /bin/key.pem /bin/cert.pem && chmod 600 /bin/key.pem /bin/cert.pem
-
 USER appuser
 
 # Copy the executable from the "build" stage.
