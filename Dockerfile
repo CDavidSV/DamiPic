@@ -25,9 +25,6 @@ RUN --mount=type=cache,target=/go/pkg/mod/ \
 # Placing it here allows the previous steps to be cached across architectures.
 ARG TARGETARCH
 
-# Generate certs for the server.
-RUN openssl req -x509 -newkey rsa:4096 -keyout /bin/key.pem -out /bin/cert.pem -sha256 -days 3650 -nodes -subj "/C=XX/ST=State/L=City/O=Company/OU=CompanySection/CN=CommonName"
-
 # Build the application.
 # Leverage a cache mount to /go/pkg/mod/ to speed up subsequent builds.
 # Leverage a bind mount to the current directory to avoid having to copy the
@@ -57,9 +54,6 @@ RUN --mount=type=cache,target=/var/cache/apk \
         tzdata \
         && \
         update-ca-certificates
-
-COPY --from=build /bin/cert.pem /bin/
-COPY --from=build /bin/key.pem /bin/
 
 COPY ./ui /bin/ui
 COPY ./fonts /bin/fonts
