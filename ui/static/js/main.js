@@ -10,7 +10,7 @@ const copyImgTag = document.getElementById('copy-img-tag');
 const copyLinkButton = document.getElementById('copy-url-btn');
 const copyImgTagButton = document.getElementById('copy-img-btn');
 
-const apiURL = 'http://localhost:8080';
+const apiURL = `${window.location.origin}`;
 
 let width = 1920;
 let height = 1080;
